@@ -1,162 +1,127 @@
 import react, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import FileSaver from 'file-saver';
-const Post = () =>
-{
-    // const [posts,setPosts] = useState([{PostNo: 1, Title : "This is title1", Description: "this is description1"},
-    //                                     {PostNo: 2, Title : "This is title2", Description: "this is description2"}]);
-    // const [posts,setPosts] = useState([]);
+import MultiSelect from "react-multi-select-component";
+import './Posts.css';
 
-    
-    // react.useEffect(() => {
-    //     fetch("http://localhost:3001/list_1")
-    //       .then((res) => res.json())
-    //       .then((res) => setPosts(res.posts))
-    //       .then((res)=>console.log(res));
-          
-    //   }, []);
+const Post = () => {
+    const options = [
+        { label: "Data Stuctures", value: "data_stuctures" },
+        { label: "Computer Network", value: "computer_network" },
+        { label: "Operating Systems", value: "operating_systems", disabled: true },
+        { label: "Automata Theory", value: "automata_theory" },
+        { label: "Artificial Intelligence", value: "artificial intelligence" },
+    ];
 
-    // const [sortedposts,setSortedposts] = useState(posts);
-    // const listposts = sortedposts.map((post)=>
-    // <div key = {post.ObjectID}>
-    //       {/* <Card className ="mt-4">
-    //             <Card.Header>Featured</Card.Header>
-    //             <Card.Body>
-    //                 <Card.Title>{ post.Title }</Card.Title>
-    //                 <Card.Text>
-    //                 { post.Description }
-    //                 </Card.Text>
-    //                 <Button variant="primary">Go somewhere</Button>
-    //             </Card.Body>
-    //     </Card> */}
-    //     <Card className ="mt-4">
-    //             <Card.Header>Featured</Card.Header>
-    //             <Card.Body>
-    //                 <Card.Title>{ post.filename }</Card.Title>
-    //                 <Card.Text>
-    //                 Year : { post.year }
-    //                 Subject : {post.subject}
-    //                 Description: { post.description }
-    //                 </Card.Text>
-    //                 <Button variant="primary">Download</Button>
-    //             </Card.Body>
-    //     </Card>
-    // </div>
-      
-    // );
+    const [selected, setSelected] = useState([]);
 
-    // const handleSearch = (event) =>{
-    //     const newpost = [];
-    //     posts.map((post)=>{
-    //         if (post.Title.includes(event.target.value) || post.Description.includes(event.target.value))
-    //         {
-    //             newpost.push(post);
-    //         }
-    //     });
-    //     //console.log(event.target.value,newpost);
-    //     setSortedposts(newpost);
-
-    // }
-
-    // return(
-    //     <div>
-    //         <input type="text" onChange={ handleSearch } placeholder="search"/>
-    //         {listposts}
-    //     </div>
-    // );
-
-    const [posts, setPosts] = useState([]); 
+    const [posts, setPosts] = useState([]);
+    const [sortedposts, setSortedposts] = useState([]);
 
     react.useEffect(() => {
         fetch("http://localhost:3001/list_1")
-          .then((res) => res.json())
-          .then((res) => setPosts(res.posts));
+            .then((res) => res.json())
+            .then((res) => {
+                setPosts(res.posts);
+                setSortedposts(res.posts);
+            });
 
-          
-      }, []);
 
-      const download_file = async (filename) => {
-         
-        var url ="http://localhost:3001/download/"+ filename
+    }, []);
+
+    react.useEffect(() => {
+        console.log(selected);
+
+        /* abstract particular field i.e lable. from array selected: */
+        let field_array = [];
+        selected.map((item) => {
+            field_array.push(item.value);
+        });
+
+        var data = [{ id: 1, name: 'data_stuctures' }, { id: 2, name: 'computer_network' }, { id: 3, name: 'artificial' }];
+        let filter_data = data.filter((item) => field_array.includes(item.name)).map(({ id, name }) => ({ id, name }));
+        console.log("filter_data", filter_data);
+
+    }, [selected]);
+
+    const download_file = async (filename) => {
+
+        var url = "http://localhost:3001/download/" + filename
         console.log("url:", url);
-        // const res = await fetch(url);
-        // //const blob = await res.blob();
-        // //(blob, filename);
-        
-        // axios.get(
-        //     url, { 
-        //         // receive two    parameter endpoint url ,form data
-        //     })
-        //   .then(res => { // then print response status
-        //       console.log("Downloaded")
-        //    })
-
-        // axios({
-        //     method : "GET",
-        //     url: "http://localhost:3001/download/"+ filename,
-        //     responseType: "blob"
-        // }).then(response => {
-
-        // })
         let downloadFilename = filename;
 
-		axios({
-			method: "GET",
-			url: "http://localhost:3001/download/"+ filename,
-			responseType: "blob",
-			params: {
-				'file' : filename
-			}
-		}).then(response => {
-            /*TODO: Read abt file saver */
+        axios({
+            method: "GET",
+            url: "http://localhost:3001/download/" + filename,
+            responseType: "blob",
+            params: {
+                'file': filename
+            }
+        }).then(response => {
             FileSaver.saveAs(response.data, downloadFilename);
-				console.log(response);
-			// this.setState({ fileDownloading: true }, () => {
+            console.log(response);
 
-			// 	FileSaver.saveAs(response.data, downloadFilename);
-			// 	console.log(response);
-			// });
-		}).then(() => {
-			// this.setState({ fileDownloading: false });
-			console.log("File Downloading Completed");
-		});	
+        }).then(() => {
+            console.log("File Downloading Completed");
+        });
 
-      }
-      const listposts = posts.map((post)=>
-            <div key = {post.ObjectID}>
-                
-                <Card className ="mt-4">
-                        <Card.Header>Featured</Card.Header>
-                        <Card.Body>
-                            <Card.Title>{ post.filename }</Card.Title>
-                            <Card.Text>
-                            Year : { post.year }
-                            Subject : {post.subject}
-                            Description: { post.description }
-                            </Card.Text>
-                            <Button variant="primary" onClick= {() => download_file( post.file )}>Download</Button>
-                        </Card.Body>
-                </Card>
-            </div>
+    }
+
+    const listposts = sortedposts.map((post) =>
+        <div key={post.ObjectID}>
+
+            <Card className="mt-4">
+
+                <Card.Body>
+                    <Card.Title>{post.filename}</Card.Title>
+                    <Card.Text>
+                        <div> Year       : {post.year} </div>
+                        <div> Subject    : {post.subject} </div>
+                        <div> Description: {post.description} </div>
+                    </Card.Text>
+                    <Button variant="primary" onClick={() => download_file(post.file)}>Download</Button>
+                </Card.Body>
+                {/* Todo : add Author <Card.Footer>Post by : </Card.Footer> */}
+            </Card>
+        </div>
     );
 
-    const handleSearch = (event) =>{
-            // const newpost = [];
-            // posts.map((post)=>{
-            //     if (post.Title.includes(event.target.value) || post.Description.includes(event.target.value))
-            //     {
-            //         newpost.push(post);
-            //     }
-            // });
-            // //console.log(event.target.value,newpost);
-            // setSortedposts(newpost);
-    
+    const handleSearch = (event) => {
+        const newpost = [];
+        if (event.target.value != "") {
+            posts.map((post) => {
+                if (post.description != null && post.description.toLowerCase().includes(event.target.value.toLowerCase())) {
+                    newpost.push(post);
+                } else if (post.subject != null && post.subject.toLowerCase().includes(event.target.value.toLowerCase())) {
+                    newpost.push(post);
+                }
+
+            });
+            setSortedposts(newpost);
+        } else {
+            setSortedposts(posts);
+        }
+
     }
-    return(
+    const handleOnchange = (event) => {
+        setSelected(event);
+    }
+
+    return (
         <div>
-             <input type="text" onChange={ handleSearch } placeholder="search"/>
+            {/* <div>
+                <h1>Select Fruits</h1>
+                <pre>{JSON.stringify(selected)}</pre>
+                <MultiSelect
+                    options={options}
+                    value={selected}
+                    onChange={handleOnchange}
+                    labelledBy="Select"
+                />
+            </div> */}
+            <input className="field" type="text" onChange={handleSearch} placeholder="search" />
             {listposts}
         </div>
     )

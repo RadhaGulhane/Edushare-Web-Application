@@ -1,34 +1,15 @@
-Server:
-cd server
-Install files:
-npm install express
-npm install mongoose
-npm install streamifier
-express-fileupload
-ejs
-cors 
+# Edushare : Platform to guide the new joiners to university
 
-nodemon
-npm install nodemon
-go to package.js and add  "start": "nodemon index.js" under "scripts"
-Resources:
-GridFs:
-https://mongodb.github.io/node-mongodb-native/2.2/api/GridFSBucket.html
-https://www.freecodecamp.org/news/gridfs-making-file-uploading-to-mongodb/
+## The need of such platform:
+It is very often that newcomers find difficulties in adapting to the university environment. This platform aimed to help such people by connecting them with current students, faculty members and get all the information about the curriculum, syllabus, projects in one place.
 
+## some features :
+This platform is capable of sharing and accessing extensive files such as lecture videos, projects, etc. allowing people to 
+This platform is customizable according to the university coursework, which can aid in finding the required information.
 
-client :
-go to client folder :
+## Who can use it:
+This platform is open to any student, faculty from the university, where they can share their experiences, lecture notes, etc., relevant to academics.
 
-npx create-react-app .
-
-install files:
-react-router-dom
-react-bootstrap
-bootstrap
-file-saver
-axios
-
-npm install react-router-dom bootstrap react-bootstrap file-saver axios
-
-start: npm start
+## Future Plans:
+- Improving User Interface
+- Provide more privileges for faculties or heads of the student community in order to provide authority to delete non-relevant, illegal files.

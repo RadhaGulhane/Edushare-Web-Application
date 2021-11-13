@@ -1,8 +1,8 @@
 import react from 'react';
 
 function Chat() {
-    
-    return(
+
+    return (
         <div>
             <h1>Chat</h1>
         </div>
